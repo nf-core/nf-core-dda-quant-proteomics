@@ -25,10 +25,13 @@ if (has_fractions) {
 idcols = c(xcol, ycol)
 
 amount_psms = aggregate(SpecID~get(xcol), feats, length)
+set_amount_psms = aggregate(SpecID~Biological.set, feats, length)
 names(amount_ms2) = idcols
 names(amount_psms) = idcols
 amount_ms2$count = 'MS2 scans'
 amount_psms$count = 'PSMs IDed'
+names(set_amount_psms) = c('Set', 'psmcount')
+write.table(set_amount_psms, 'summary.txt', row.names=F, quote=F, sep='\t')
 amount_id = rbind(amount_psms, amount_ms2)
 amount_id$count = as.factor(amount_id$count)
 procents = dcast(amount_id, get(xcol)~count, value.var='amount')
@@ -55,10 +58,15 @@ if (length(grep('plex', names(feats)))) {
 }
 
 mcl = aggregate(as.formula(paste('SpecID~', xcol, '+ missed_cleavage')), feats, length)
-procents = subset(mcl, missed_cleavage == 1)$SpecID /subset(mcl, missed_cleavage==0)$SpecID
 mcl$missed_cleavage = as.factor(mcl$missed_cleavage)
 png('miscleav', width=width, height=(3 * nrsets + 2) * 72)
-print(ggplot(subset(mcl, missed_cleavage %in% c(1,2,3)), aes_string(xcol, 'SpecID')) + geom_bar(aes(fill=missed_cleavage), position='dodge', stat='identity') + coord_flip() + ylab('# PSMs') + xlab('Plate') + theme_bw() + theme(axis.title=element_text(size=20), axis.text=element_text(size=15), legend.position="top", legend.text=element_text(size=15), legend.title=element_text(size=15)) + scale_fill_discrete(name="Nr missed cleavages") + geom_text(data=subset(mcl, missed_cleavage == 1), aes(x=!!ensym(xcol), y=SpecID/2, label=paste(100*round(procents, 2), '%')), nudge_x=-0.333, colour="white", size=8))
+mcplot = ggplot(subset(mcl, missed_cleavage %in% c(1,2,3)), aes_string(xcol, 'SpecID')) + geom_bar(aes(fill=missed_cleavage), position='dodge', stat='identity') + coord_flip() + ylab('# PSMs') + xlab('Plate') + theme_bw() + theme(axis.title=element_text(size=20), axis.text=element_text(size=15), legend.position="top", legend.text=element_text(size=15), legend.title=element_text(size=15)) + scale_fill_discrete(name="Nr missed cleavages")
+
+if (nrow(subset(mcl, missed_cleavage == 1))) {
+  procents = subset(mcl, missed_cleavage == 1)$SpecID / sum(mcl$SpecID)
+  mcplot = mcplot + geom_text(data=subset(mcl, missed_cleavage == 1), aes(x=!!ensym(xcol), y=SpecID/2, label=paste(100*round(procents, 2), '%')), nudge_x=-0.333, colour="white", size=8)
+}
+print(mcplot)
 dev.off()
 
 
@@ -80,7 +88,7 @@ for (plateid in plateids) {
     w = 30 * 72
   } else { 
     subfeats = feats
-    h = (2 * length(unique(feats[xcol])) + 1) * 72
+    h = (2 * nrow(unique(feats[xcol])) + 1) * 72
     w = 1200
   }
   for (ptype in names(ptypes)) {
@@ -91,6 +99,9 @@ for (plateid in plateids) {
     } else {
       plotdata = subfeats
       p = ggplot(plotdata, aes_string(x=xcol, y=ptypes[[ptype]][1])) + geom_violin(trim=F) 
+    }
+    if (ptype == 'precerror') {
+      p = p + geom_hline(yintercept=0, size=2)
     }
     png(fn, height=h, width=w)
     p = p + ylab(ptypes[[ptype]][2]) + theme_bw() + theme(axis.title=element_text(size=30), axis.text=element_text(size=20))
