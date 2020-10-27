@@ -54,4 +54,4 @@ These tests are run both with the latest available version of `Nextflow` and als
 
 ## Getting help
 
-For further information/help, please consult the [nf-core/ddamsproteomics documentation](https://nf-co.re/ddamsproteomics/docs) and don't hesitate to get in touch on the nf-core Slack [#ddamsproteomics](https://nfcore.slack.com/channels/ddamsproteomics) channel ([join our Slack here](https://nf-co.re/join/slack)).
+For further information/help, please consult the [nf-core/ddamsproteomics documentation](https://nf-co.re/ddamsproteomics/usage) and don't hesitate to get in touch on the nf-core Slack [#ddamsproteomics](https://nfcore.slack.com/channels/ddamsproteomics) channel ([join our Slack here](https://nf-co.re/join/slack)).
