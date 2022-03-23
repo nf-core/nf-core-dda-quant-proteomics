@@ -11,6 +11,8 @@ Initial release of nf-core/ddamsproteomics, created with the [nf-core](https://n
 
 ### `Fixed`
 
+- Clarified conda usage and added an installation tutorial for Singularity since the one on Syllabs' website uses an outdate version of GO Compiler
+
 ### `Dependencies`
 
 ### `Deprecated`
