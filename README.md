@@ -1,6 +1,9 @@
 # nf-core/ddamsproteomics
 **Quantitative shotgun MS proteomics as done in Lehtio lab**
 
+> ## This pipeline is no longer being maintained
+> ### _Please see [nf-core/quantms](https://nf-co.re/quantms) for a more up to date pipeline that covers much of the same functionality._
+
 [![Build Status](https://travis-ci.org/nf-core/ddamsproteomics.svg?branch=master)](https://travis-ci.org/nf-core/ddamsproteomics)
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.32.0-brightgreen.svg)](https://www.nextflow.io/)
 
